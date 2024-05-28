@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +10,12 @@ public class RoomSettings : MonoBehaviour
     // Members
     [SerializeField]
     private LineRenderer _outlineRender;
+    [SerializeField]
+    private MeshFilter _meshFilter;
+    [SerializeField]
+    private Camera _camera;
+    
+    
 
     // Room Settings
     [SerializeField]
@@ -20,6 +27,8 @@ public class RoomSettings : MonoBehaviour
     
     // Variables
     private Vector3[] _outlineVertices;
+    private int[] _roomTriangles;
+    private Mesh _mesh;
 
 
     // Start is called before the first frame update
@@ -28,6 +37,10 @@ public class RoomSettings : MonoBehaviour
         // Set Room Defaults;
         _roomHeight = 3;
         _roomLength = 5;
+
+        // Set up room Renderer
+        _mesh = new Mesh();
+        _meshFilter.mesh = _mesh;
 
         // Set up outline renderer
         _outlineRender.positionCount = 4;
@@ -38,20 +51,28 @@ public class RoomSettings : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        // Update Room Size
-        transform.localScale = new Vector3(_roomLength, _roomHeight, 0);
+        // Update room graphics
+        UpdateCamera();
+        _outlineVertices = GetOutlinePoints();
+        _roomTriangles = GetRoomTriangles();
+        _mesh.Clear();
+        _mesh.vertices = _outlineVertices;
+        _mesh.triangles = _roomTriangles;
 
         // Draw outline
-        _outlineVertices = GetOutlinePoints();
         _outlineRender.SetPositions(_outlineVertices);
+    }
+
+    private void UpdateCamera() {
+        _camera.transform.position = new Vector3(_roomLength / 2, _roomHeight / 2, 0);
     }
 
     private Vector3[] GetOutlinePoints() {
         Vector3[] vertices = new Vector3[] {
-            new Vector3(0.5f, 0.5f, -1.0f),
-            new Vector3(0.5f, -0.5f, -1.0f),
-            new Vector3(-0.5f, -0.5f, -1.0f),
-            new Vector3(-0.5f, 0.5f, -1.0f)
+            new Vector3(0, 0, -1.0f),
+            new Vector3(0, 1, -1.0f),
+            new Vector3(1, 1, -1.0f),
+            new Vector3(1, 0, -1.0f)
         };
 
         for (int i = 0; i < vertices.Length; i++) {
@@ -60,6 +81,14 @@ public class RoomSettings : MonoBehaviour
         }
 
         return vertices;
+    }
+
+    private int[] GetRoomTriangles()
+    {
+        return new int[] {
+            0, 1, 3, 
+            2, 1, 3
+        };
     }
 
     public float[] GetDimensions() {
