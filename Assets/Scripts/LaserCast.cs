@@ -73,21 +73,23 @@ public class LaserCast : MonoBehaviour
     private Vector3[] Raycast() {
         // Intersections to return to the renderer
         List<Vector3> intersections = new List<Vector3> {
-            new Vector3(_x, _y, -2)
+            new Vector3(_x, _y, _room.GetColliderZ())
         };
 
         // Wall positions and lines
         float miles = _distance;
         Vector2 dir = _direction;
         while (miles > 0) {
-            Vector3 previous = intersections[intersections.Count - 1];
-
-            // Figure out bounce mechanics here
+            // Using unity ray intersection functions:
+            Vector3 origin = intersections[intersections.Count - 1];
+            Ray ray = new Ray(dir, origin);
             
-            Vector3 next = previous + (Vector3) (dir);
+            RaycastHit2D res = Physics2D.GetRayIntersection(ray, miles);
+            print(res.normal.ToString());
 
-            miles -= Vector3.Distance(previous, next);
-            intersections.Add(next);
+            break;
+            // miles -= Vector3.Distance(previous, next);
+            // intersections.Add(next);
         }
 
         return intersections.ToArray();

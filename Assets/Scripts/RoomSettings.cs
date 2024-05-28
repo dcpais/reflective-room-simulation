@@ -13,6 +13,8 @@ public class RoomSettings : MonoBehaviour
     [SerializeField]
     private MeshFilter _meshFilter;
     [SerializeField]
+    private EdgeCollider2D _collider;
+    [SerializeField]
     private Camera _camera;
     
     
@@ -26,6 +28,7 @@ public class RoomSettings : MonoBehaviour
     private float _roomHeight;
     
     // Variables
+    private Vector2[] _colliderVertices;
     private Vector3[] _outlineVertices;
     private int[] _roomTriangles;
     private Mesh _mesh;
@@ -61,6 +64,8 @@ public class RoomSettings : MonoBehaviour
 
         // Draw outline
         _outlineRender.SetPositions(_outlineVertices);
+        _colliderVertices = GetColliderVertices(_outlineVertices);
+        _collider.points = _colliderVertices;
     }
 
     private void UpdateCamera() {
@@ -83,6 +88,14 @@ public class RoomSettings : MonoBehaviour
         return vertices;
     }
 
+    private Vector2[] GetColliderVertices(Vector3[] outlineVertices) {
+        Vector2[] vertices = new Vector2[4];
+        for (int i = 0; i < outlineVertices.Length; i++) {
+            vertices[i] = outlineVertices[i];
+        }
+        return vertices;
+    }
+
     private int[] GetRoomTriangles()
     {
         return new int[] {
@@ -93,5 +106,9 @@ public class RoomSettings : MonoBehaviour
 
     public float[] GetDimensions() {
         return new float[] {_roomLength, _roomHeight};
+    }
+
+    public float GetColliderZ() {
+        return 0;
     }
 }
