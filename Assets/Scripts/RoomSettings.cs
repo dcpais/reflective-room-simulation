@@ -26,8 +26,8 @@ public class RoomSettings : MonoBehaviour
     void Start()
     {
         // Set Room Defaults;
-        _roomHeight = 1;
-        _roomLength = 1;
+        _roomHeight = 3;
+        _roomLength = 5;
 
         // Set up outline renderer
         _outlineRender.positionCount = 4;
@@ -42,11 +42,11 @@ public class RoomSettings : MonoBehaviour
         transform.localScale = new Vector3(_roomLength, _roomHeight, 0);
 
         // Draw outline
-        _outlineVertices = getOutlinePoints();
+        _outlineVertices = GetOutlinePoints();
         _outlineRender.SetPositions(_outlineVertices);
     }
 
-    private Vector3[] getOutlinePoints() {
+    private Vector3[] GetOutlinePoints() {
         Vector3[] vertices = new Vector3[] {
             new Vector3(0.5f, 0.5f, -1.0f),
             new Vector3(0.5f, -0.5f, -1.0f),
@@ -60,5 +60,9 @@ public class RoomSettings : MonoBehaviour
         }
 
         return vertices;
+    }
+
+    public float[] GetDimensions() {
+        return new float[] {_roomLength, _roomHeight};
     }
 }

@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class LaserCast : MonoBehaviour
@@ -11,34 +12,90 @@ public class LaserCast : MonoBehaviour
     [SerializeField]
     private MeshFilter _meshFilter;
     [SerializeField]
-    private GameObject _room;
+    private RoomSettings _room;
+
+
+    // Laser Settings
     [SerializeField]
+    private float _x;
+    [SerializeField]
+    private float _y;
+    [SerializeField]
+    private Vector2 _direction;
+    [SerializeField]
+    [Range(0f, 200f)]
+    private float _distance;
 
-
-
+    // other vars
+    private Vector3[] _laserPoints;
+    private float _roomLength;
+    private float _roomHeight;
 
 
     // Start is called before the first frame update
     void Start()
     {
+        _x = 1f;
+        _y = 1f;
+        transform.position = new Vector3(_x, _y, 0);
+        
+        _direction = new Vector2(1, 0);
+        _distance = 2;
+        _laserRenderer.loop = false;
 
+        float[] dims = _room.GetDimensions();
+        _roomLength = dims[0];
+        _roomHeight = dims[1];
 
-        // Draw the circle
+        // Initialize the circle render stuff
         InitCircle();
     }
 
     // Update is called once per frame
     void Update()
     {
-        
-
-        // Redraw origin of laser circle
+        // Redraw laser and circle
+        DrawLaser();
         DrawCircle();
     }
 
+    private void UpdateTransform() {
+        
+    }
+
+    private void DrawLaser() {
+        _laserPoints = Raycast();
+        _laserRenderer.positionCount = _laserPoints.Count();
+        _laserRenderer.SetPositions(_laserPoints);
+    }
+
+    private Vector3[] Raycast() {
+        // Intersections to return to the renderer
+        List<Vector3> intersections = new List<Vector3> {
+            new Vector3(_x, _y, -2)
+        };
+
+        // Wall positions and lines
+        float travelled = 0;
+        Vector2 dir = _direction;
+        while (travelled < _distance) {
+            Vector3 previous = intersections[intersections.Count - 1];
+
+            // Figure out bounce mechanics here
+
+            Vector3 next = previous + (Vector3) ((_distance - travelled) * dir);
+
+            travelled += Vector3.Distance(previous, next);
+            intersections.Add(next);
+        }
+
+        return intersections.ToArray();
+    }
+
+
 
     // CIRCLE RENDER CODE
-    [System.Serializable]
+    [Serializable]
     public class CircleSettings 
     {
         public Mesh _mesh;
@@ -65,7 +122,6 @@ public class LaserCast : MonoBehaviour
         circle._mesh.Clear();
         circle._mesh.vertices = circle._vertices;
         circle._mesh.triangles = circle._triangles;
-        Array.ForEach(circle._vertices, x => print(x.ToString()));
     }
 
     private Vector3[] GenerateCirclePoints(float radius, int splits) {
