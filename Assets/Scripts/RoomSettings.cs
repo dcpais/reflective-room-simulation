@@ -64,7 +64,7 @@ public class RoomSettings : MonoBehaviour
     }
 
     private void UpdateCamera() {
-        _camera.transform.position = new Vector3(_roomLength / 2, _roomHeight / 2, 0);
+        _camera.transform.position = new Vector3(_roomLength / 2, _roomHeight / 2, -10);
     }
 
     private Vector3[] GetOutlinePoints() {

@@ -55,12 +55,13 @@ public class LaserCast : MonoBehaviour
     void Update()
     {
         // Redraw laser and circle
+        UpdateTransform();
         DrawLaser();
         DrawCircle();
     }
 
     private void UpdateTransform() {
-        
+        transform.position = new Vector3(_x, _y, 0);
     }
 
     private void DrawLaser() {
@@ -76,16 +77,16 @@ public class LaserCast : MonoBehaviour
         };
 
         // Wall positions and lines
-        float travelled = 0;
+        float miles = _distance;
         Vector2 dir = _direction;
-        while (travelled < _distance) {
+        while (miles > 0) {
             Vector3 previous = intersections[intersections.Count - 1];
 
             // Figure out bounce mechanics here
+            
+            Vector3 next = previous + (Vector3) (dir);
 
-            Vector3 next = previous + (Vector3) ((_distance - travelled) * dir);
-
-            travelled += Vector3.Distance(previous, next);
+            miles -= Vector3.Distance(previous, next);
             intersections.Add(next);
         }
 
