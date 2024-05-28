@@ -8,14 +8,6 @@ public class RoomSettings : MonoBehaviour
 {
     // Members
     [SerializeField]
-    private Transform _transform;
-    [SerializeField]
-    private BoxCollider2D _collider;
-    [SerializeField]
-    private MeshRenderer _renderer;
-    [SerializeField]
-    private MeshFilter _meshFilter;
-    [SerializeField]
     private LineRenderer _outlineRender;
 
     // Room Settings
@@ -47,7 +39,6 @@ public class RoomSettings : MonoBehaviour
     void Update()
     {
         // Update Room Size
-        print(_roomHeight + " " + _roomLength);
         transform.localScale = new Vector3(_roomLength, _roomHeight, 0);
 
         // Draw outline
