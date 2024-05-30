@@ -21,7 +21,7 @@ public class LaserCast : MonoBehaviour
     [SerializeField]
     private float _y;
     [SerializeField]
-    private Vector3 _direction;
+    private Vector2 _direction;
     [SerializeField]
     [Range(0f, 200f)]
     private float _distance;
@@ -39,7 +39,7 @@ public class LaserCast : MonoBehaviour
         _y = 1f;
         transform.position = new Vector3(_x, _y, 0);
         
-        _direction = new Vector3(1, 0, 0);
+        _direction = new Vector2(1, 0);
         _distance = 2;
         _laserRenderer.loop = false;
 
@@ -73,23 +73,23 @@ public class LaserCast : MonoBehaviour
     private Vector3[] Raycast() {
         // Intersections to return to the renderer
         List<Vector3> intersections = new List<Vector3> {
-            new Vector3(_x, _y, _room.GetColliderZ())
+            new Vector3(_x, _y, 0)
         };
 
         // Wall positions and lines
         float miles = _distance;
-        Vector3 dir = _direction;
+        Vector2 dir = _direction;
         while (miles > 0) {
             // Using unity ray intersection functions:
             Vector3 origin = intersections[intersections.Count() - 1];
-            Ray ray = new Ray(dir, origin);
-            
-            RaycastHit2D res = Physics2D.GetRayIntersection(ray, miles);
-            print(res.distance);
-
-            break;
-            // miles -= Vector3.Distance(previous, next);
-            // intersections.Add(next);
+            RaycastHit2D res = Physics2D.Raycast(origin, dir, miles);
+            if (!res || res.distance == 0) {
+                break;
+            }
+            miles -= res.distance;
+            intersections.Add(res.point);
+            dir += - 2 * Vector2.Dot(dir, res.normal) * res.normal;
+            print(res.point.ToString());
         }
         intersections.Add(intersections[intersections.Count() - 1] + (Vector3) dir * miles);
         return intersections.ToArray();

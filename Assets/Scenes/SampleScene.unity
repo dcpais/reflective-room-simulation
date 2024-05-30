@@ -568,8 +568,8 @@ GameObject:
   - component: {fileID: 1823186110}
   - component: {fileID: 1823186109}
   - component: {fileID: 1823186113}
-  - component: {fileID: 1823186114}
   - component: {fileID: 1823186108}
+  - component: {fileID: 1823186114}
   m_Layer: 0
   m_Name: Room
   m_TagString: Untagged
@@ -804,7 +804,7 @@ EdgeCollider2D:
   m_AdjacentStartPoint: {x: 0, y: 0}
   m_AdjacentEndPoint: {x: 0, y: 0}
   m_UseAdjacentStartPoint: 0
-  m_UseAdjacentEndPoint: 1
+  m_UseAdjacentEndPoint: 0
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
